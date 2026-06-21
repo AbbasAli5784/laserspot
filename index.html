@@ -1450,19 +1450,30 @@
           utm_term: data.utm_term
         });
 
-        fetch('https://your-backend-endpoint.com/api/leads', {
+        fetch('https://formspree.io/f/xbdvrwjr', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify(data)
         })
-        .catch(function() {})
-        .finally(function() {
-          form.style.display = 'none';
-          if (confirmPhone) confirmPhone.textContent = data.phone;
-          thankYou.style.display = 'block';
-          var sticky = document.getElementById('sticky-cta');
-          if (sticky) sticky.style.display = 'none';
-          document.getElementById('book').scrollIntoView({ behavior: 'smooth' });
+        .then(function(res) { return res.json(); })
+        .then(function(result) {
+          if (result.ok) {
+            form.style.display = 'none';
+            if (confirmPhone) confirmPhone.textContent = data.phone;
+            thankYou.style.display = 'block';
+            var sticky = document.getElementById('sticky-cta');
+            if (sticky) sticky.style.display = 'none';
+            document.getElementById('book').scrollIntoView({ behavior: 'smooth' });
+          } else {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Book My $39 Lip &amp; Chin Treatment &rarr;';
+            alert('Something went wrong — please try again.');
+          }
+        })
+        .catch(function() {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Book My $39 Lip &amp; Chin Treatment &rarr;';
+          alert('Network error — please check your connection and try again.');
         });
       });
     })();
